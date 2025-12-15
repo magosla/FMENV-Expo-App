@@ -5,25 +5,59 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = '#1e40af';
+const tintColorDark = '#3f59a8ff';
+
+export type ColorOptions = keyof (typeof Colors['light'])
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
+    background: '#ffffff',
+    backgroundAccent: '#cbfbf1',
+    backgroundError: '#ffedd4',
+    backgroundInfo: '#dbeafe',
+    backgroundMuted: '#dbdbdbc9',
+    backgroundPrimary: '#ffffff',
+    backgroundSecondary: '#fafafa',
+    backgroundSuccess: '#dcfce7',
+    backgroundWarning: '#fef9c2',
+    foreground: '#11181C',
+    foregroundAccent: '#0679c0',
+    foregroundError: '#f54a00',
+    foregroundInfo: '#2b7fff',
+    foregroundMuted: '#d3d1d1ff',
+    foregroundPrimary: '#111827',
+    foregroundSecondary: '#4b5563',
+    foregroundSuccess: '#008236',
+    foregroundWarning: '#f0b100',
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    tint: tintColorLight,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
+    background: '#0f172b',
+    backgroundAccent: '#cbfbf1',
+    backgroundError: '#ffedd4c9',
+    backgroundInfo: '#dbeafe',
+    backgroundMuted: '#a1a1a1c9',
+    backgroundPrimary: '#314158',
+    backgroundSecondary: '#6a7282',
+    backgroundSuccess: '#dcfce7c9',
+    backgroundWarning: '#fef9c2',
+    foreground: '#ffffff',
+    foregroundAccent: '#0679c0ff',
+    foregroundError: '#f54a00c9',
+    foregroundInfo: '#2b7fffc9',
+    foregroundMuted: '#e5e5e5c9',
+    foregroundPrimary: '#fbf9fa',
+    foregroundSecondary: '#f9f3f4',
+    foregroundSuccess: '#008236c9',
+    foregroundWarning: '#f0b100c9',
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+    tint: tintColorDark,
   },
 };
 

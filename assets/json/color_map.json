@@ -1,0 +1,32 @@
+{
+    "hazardous": {
+        "title": "Hazardous",
+        "background": "#ffe2e2",
+        "foreground": "#c10007"
+    },
+    "very_unhealthy": {
+        "title": "Very Unhealthy",
+        "background": "#ffedd4",
+        "foreground": "#f54a00"
+    },
+    "unhealthy": {
+        "title": "Unhealthy",
+        "background": "#fdf1c0",
+        "foreground": "#e17100"
+    },
+    "unhealthy_for_sensitive_groups": {
+        "title": "Unhealthy for Sensitive groups",
+        "background": "#fef9c2",
+        "foreground": "#f0b100"
+    },
+    "moderate": {
+        "title": "Moderate",
+        "background": "#ecfcca",
+        "foreground": "#5ea500"
+    },
+    "good": {
+        "title": "Good",
+        "background": "#dcfce7",
+        "foreground": "#008236"
+    }
+}

@@ -29,7 +29,7 @@ export function IconSymbol({
   name,
   size = 24,
   color,
-  style,
+  style
 }: {
   name: IconSymbolName;
   size?: number;
