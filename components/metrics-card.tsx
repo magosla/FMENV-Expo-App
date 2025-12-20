@@ -74,6 +74,7 @@ export function MetricsCard({ monitor, style }: MetricsCardProps) {
 const styles = StyleSheet.create({
     container: {
         overflow: 'hidden',
+        minHeight: 30,
         borderRadius: 8,
         shadowColor: "rgba(0, 0, 0, 0.35)",
         shadowOffset: { width: 0, height: 3 },
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
     },
     loading: {
         padding: 8,
+        textAlign: 'center',
     },
     content: {
         padding: 8,

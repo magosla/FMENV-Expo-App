@@ -10,7 +10,7 @@ export const PollutionColorMap = ({ style, ...props }: ThemedViewProps) => {
 
     return (
         <ThemedView style={[styles.container, style]} {...props}>
-            <Header>Air Quality Map</Header>
+            <Header>Air Quality Color Index</Header>
             <ThemedView style={styles.body} bgThemeColor="backgroundPrimary">
                 <ThemedView style={styles.list}>
                     {Object.keys(colorMap ?? {}).reverse().map((k, i) => (

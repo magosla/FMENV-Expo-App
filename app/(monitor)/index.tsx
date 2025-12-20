@@ -16,13 +16,11 @@ export default function Index() {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       style={styles.scrollView}
       contentContainerStyle={styles.scrollViewContent}
     >
       <ThemedView style={styles.container}>
-        <Header style={styles.header} >
-          {process.env.EXPO_PUBLIC_APP_NAME || 'Air Quality Monitors'}
-        </Header>
         {monitorsArray.length === 0 ? (
           <EmptyMonitorsState />
         ) : (
@@ -52,7 +50,7 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   scrollView: { backgroundColor: '#0000FF00', opacity: 0.8 },
-  scrollViewContent: { backgroundColor: '#0000FF00' },
+  scrollViewContent: { backgroundColor: '#0000FF00', padding: 4 },
   container: {
     flex: 1,
     paddingLeft: 8,
@@ -60,6 +58,7 @@ const styles = StyleSheet.create({
     paddingTop: 22,
   },
   header: {
+    marginTop: 20,
     padding: 8,
     marginBottom: 8,
     borderRadius: 4,

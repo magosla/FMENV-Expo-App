@@ -1,7 +1,8 @@
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { isIOS26OrLater } from "@/utils/platform";
 import { ImageBackground } from "expo-image";
 import { Stack } from "expo-router";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 export const unstable_settings = {
     anchor: 'index',
@@ -38,6 +39,8 @@ export default function MonitorLayout() {
             <Stack
                 screenOptions={{
                     headerLargeTitleEnabled: true,
+                    headerTransparent: Platform.OS === 'ios',
+                    headerBlurEffect: isIOS26OrLater() ? undefined : 'regular',
                     headerStyle: {
                         backgroundColor: '#0000FF00',
                     },
@@ -52,12 +55,12 @@ export default function MonitorLayout() {
                 }}
             >
                 <Stack.Screen name="index" options={{
-                    headerShown: false,
+                    title: process.env.EXPO_PUBLIC_APP_NAME || 'Air Quality Monitors',
                 }} />
                 <Stack.Screen name="detail/[monitorId]" options={{
-                    presentation: 'modal',
+                    // presentation: 'modal',
                     title: 'Air Quality',
-                    headerTitleAlign:'center',
+                    headerTitleAlign: 'center',
                 }} />
             </Stack>
         </ImageBackground>

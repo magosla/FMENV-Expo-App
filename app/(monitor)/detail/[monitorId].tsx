@@ -28,8 +28,9 @@ export default function MonitorDetailPage() {
     return (
         <>
             <ScrollView
+                contentInsetAdjustmentBehavior="automatic"
                 contentContainerStyle={styles.scrollViewContent}
-                style={[styles.scrollView, { backgroundColor }]}
+                style={[styles.scrollView, { backgroundColor}]}
             >
                 <MonitorInfo monitor={monitor} style={styles.monitorInfo} />
                 <MonitorSection monitorId={monitorId} style={styles.monitorSection} />
@@ -59,7 +60,7 @@ export default function MonitorDetailPage() {
 
 const styles = StyleSheet.create({
     scrollView: { flex: 1, opacity: 0.8, margin: 0 },
-    scrollViewContent: { flex: 1, backgroundColor: '#0000FF00' },
+    scrollViewContent: { flex: 1, padding: 8, backgroundColor: '#0000FF00' },
     monitorInfo: {
         margin: 8,
     },
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     },
     link: {
         borderWidth: 1,
-        display: 'flex',
+        display: 'contents',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,
