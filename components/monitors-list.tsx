@@ -31,6 +31,7 @@ export function MonitorsList({ monitors, activeMonitorId, style }: MonitorsListP
 const styles = StyleSheet.create({
     contentContainer: {
         paddingBottom: 20,
+        rowGap:4,
     }
 });
 

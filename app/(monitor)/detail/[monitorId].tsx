@@ -36,7 +36,6 @@ export default function MonitorDetailPage() {
             <ScrollView
                 alwaysBounceVertical={true}
                 contentInsetAdjustmentBehavior="automatic"
-                automaticallyAdjustContentInsets={true}
                 contentContainerStyle={styles.scrollViewContent}
                 style={[styles.scrollView, { backgroundColor }]}
             >
@@ -44,27 +43,28 @@ export default function MonitorDetailPage() {
                 <MonitorSection monitorId={monitorId} style={styles.monitorSection} />
                 <PollutionColorMap style={styles.pollutionColor} />
                 <View style={styles.spacer} />
+
+                <View style={styles.floatingFooter}>
+                    <ThemedLink
+                        href={mapUrl || ''}
+                        external={true}
+                        bgThemeColor="backgroundSecondary"
+                        themeColor="foregroundSecondary"
+                        borderThemeColor="foregroundSecondary"
+                        style={styles.link}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={0.8}>
+                            <MaterialIcons
+                                name="map"
+                                size={30}
+                                color={secondaryColor}
+                                weight="medium"
+                            />
+                        </TouchableOpacity>
+                    </ThemedLink>
+                </View>
             </ScrollView>
-            <View style={styles.floatingFooter}>
-                <ThemedLink
-                    href={mapUrl || ''}
-                    external={true}
-                    bgThemeColor="backgroundSecondary"
-                    themeColor="foregroundSecondary"
-                    borderThemeColor="foregroundSecondary"
-                    style={styles.link}
-                >
-                    <TouchableOpacity
-                        activeOpacity={0.8}>
-                        <MaterialIcons
-                            name="map"
-                            size={30}
-                            color={secondaryColor}
-                            weight="medium"
-                        />
-                    </TouchableOpacity>
-                </ThemedLink>
-            </View>
         </>
     );
 }

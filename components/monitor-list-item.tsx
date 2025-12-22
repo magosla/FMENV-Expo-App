@@ -18,8 +18,7 @@ export function MonitorListItem({ monitor }: MonitorListItemProps) {
             pathname: '/detail/[monitorId]',
             params: { monitorId: monitor.id }
         }}>
-            <Link.Trigger>
-                <ThemedView bgThemeColor="backgroundPrimary" style={styles.container}
+            <ThemedView bgThemeColor="backgroundPrimary" style={styles.container}
                 >
                     <View style={styles.clip}>
                         <CloudDecor />
@@ -51,7 +50,6 @@ export function MonitorListItem({ monitor }: MonitorListItemProps) {
                         </ThemedView>
                     </ThemedView>
                 </ThemedView>
-            </Link.Trigger>
         </Link>
     );
 }
@@ -63,7 +61,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        opacity:0.8,
     },
     title: {
         display: 'flex',
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
     container: {
         borderRadius: 8,
         width: '100%',
-        marginBottom: 4,
+        // marginBottom: 4,
         position: 'relative'
     },
     pointer: {
