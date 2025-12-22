@@ -43,28 +43,28 @@ export default function MonitorDetailPage() {
                 <MonitorSection monitorId={monitorId} style={styles.monitorSection} />
                 <PollutionColorMap style={styles.pollutionColor} />
                 <View style={styles.spacer} />
-
-                <View style={styles.floatingFooter}>
-                    <ThemedLink
-                        href={mapUrl || ''}
-                        external={true}
-                        bgThemeColor="backgroundSecondary"
-                        themeColor="foregroundSecondary"
-                        borderThemeColor="foregroundSecondary"
-                        style={styles.link}
-                    >
-                        <TouchableOpacity
-                            activeOpacity={0.8}>
-                            <MaterialIcons
-                                name="map"
-                                size={30}
-                                color={secondaryColor}
-                                weight="medium"
-                            />
-                        </TouchableOpacity>
-                    </ThemedLink>
-                </View>
             </ScrollView>
+
+            <ThemedLink
+                asChild={true}
+                href={mapUrl || ''}
+                external={true}
+                bgThemeColor="backgroundSecondary"
+                themeColor="foregroundSecondary"
+                borderThemeColor="foregroundSecondary"
+                style={styles.link}
+            >
+                <TouchableOpacity
+                    style={styles.button}
+                    activeOpacity={0.8}>
+                    <MaterialIcons
+                        name="map"
+                        size={30}
+                        color={secondaryColor}
+                        weight="medium"
+                    />
+                </TouchableOpacity>
+            </ThemedLink>
         </>
     );
 }
@@ -84,28 +84,26 @@ const styles = StyleSheet.create({
     spacer: {
         height: 60,
     },
-    floatingFooter: {
-        backgroundColor: 'rgba(0,0,0,0)',
-        position: 'fixed',
-        display: 'flex',
-        flexDirection: 'row',
-        flexGrow: 0,
-        alignItems: 'center',
-        width: 'auto',
-        justifyContent: 'flex-start',
-        bottom: 16,
-        left: 16,
-        zIndex: 10
+    button: {
+        margin:0,
+        padding: 10,
     },
     link: {
-        borderWidth: 1,
-        display: 'flex',
+        position: 'absolute',
+        bottom: 16,
+        left: 16,
+        zIndex: 10,
         flexGrow: 0,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,
+        elevation: 8,
         opacity: 0.9,
-        shadowRadius: 5,
-        padding: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 3.84,
+        shadowOpacity: 0.25,
+        margin: 0,
+        padding:0,
     }
 });
