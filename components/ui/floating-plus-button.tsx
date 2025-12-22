@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Dimensions, Pressable, StyleSheet, View } from "react-native";
-import { rgbaColor } from "react-native-reanimated/lib/typescript/Colors";
 
 const { width } = Dimensions.get('window');
 

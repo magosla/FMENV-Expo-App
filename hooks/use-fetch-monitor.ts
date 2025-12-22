@@ -23,13 +23,16 @@ export function useFetchMonitors() {
 
     const isFetching = useValue(isFetching$);
     const fetchFailed = useValue(() => !error$.get())
+    const HOURS_BEFORE_REFETCH = 1
 
     const fetchData = (override?: boolean) => {
-        const { days: daysLastUpdated = 0 } = dateTime(lastUpdatedAt as DateTime)
-            ?.diffNow("days")?.toObject() || {}
+        if (isFetching$.get()) return
+
+        const { hours: hoursLastUpdated = 0 } = dateTime(lastUpdatedAt as DateTime)
+            ?.diffNow("hours")?.toObject() || {}
 
         if (config === undefined || (lastUpdatedAt !== undefined
-            && daysLastUpdated <= 1 && !override)) {
+            && Math.abs(hoursLastUpdated) <= HOURS_BEFORE_REFETCH && !override)) {
             return
         }
 
@@ -42,7 +45,10 @@ export function useFetchMonitors() {
         getMonitors(url, isFetching$, error$).then(d => setMonitor(d)).catch(e => logError('Error fetching monitors', e))
     }
 
-    when(() => config, () => { fetchData() })
+    when(() => config, (v) => {
+        if (v === undefined) return
+        fetchData()
+    })
 
     return {
         isFetching, fetchFailed, fetchData

@@ -33,6 +33,7 @@ export function useFetchRecentAirQuality(monitorId?: string | Observable<string>
 
     const isFetching = useValue(() => fetching_data$[toValue(monitorId) ?? ''].get() as boolean)
     const fetchFailed = useValue(() => connection_failed$[toValue(monitorId) ?? ''].get() !== undefined)
+    const SECONDS_BEFORE_REFETCH = 30
 
     const fetchData = () => {
         const _monitorId = toValue(monitorId)
@@ -47,7 +48,7 @@ export function useFetchRecentAirQuality(monitorId?: string | Observable<string>
 
         let currentItem = recentAirQualities?.[_monitorId ?? '']
         const { seconds: lastFetchedInSecs = undefined } = dateTime(currentItem?.fetchedAt)?.diffNow("seconds")?.toObject() || {}
-        if (lastFetchedInSecs !== undefined && lastFetchedInSecs < 30) {
+        if (lastFetchedInSecs !== undefined && Math.abs(lastFetchedInSecs) < SECONDS_BEFORE_REFETCH) {
             return
         }
 
@@ -95,7 +96,10 @@ export function useFetchRecentAirQuality(monitorId?: string | Observable<string>
 
     when(
         () => config,
-        () => { fetchData() }
+        (v) => {
+            if (v === undefined) return
+            fetchData()
+        }
     )
 
     return { refreshData: fetchData, isFetching, fetchFailed }

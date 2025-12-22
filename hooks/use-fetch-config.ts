@@ -1,6 +1,6 @@
 import { getConfig } from "@/services/config-service";
 import { useAppStore } from "./use-app-store";
-import { observable } from "@legendapp/state";
+import { observable, when } from "@legendapp/state";
 import { useValue } from "@legendapp/state/react";
 import { DateTime } from "luxon";
 import { dateTime } from "@/utils/date-time";
@@ -8,7 +8,7 @@ import { NetworkError } from "@/types/error";
 import { logError } from "@/utils/log-error";
 
 const isFetching$ = observable(false)
-const error$ = observable<Error|undefined>()
+const error$ = observable<Error | undefined>()
 
 export function useFetchConfigError() {
     const fetchError = useValue(() => error$.get())
@@ -23,15 +23,15 @@ export function useFetchConfig() {
     const isFetching = useValue(isFetching$);
     const fetchFailed = useValue(() => error$.get() !== undefined)
     const loaded = useValue(() => config?.endpoints !== undefined)
+    const DAYS_BEFORE_REFETCH = 1
 
     const fetchData = (override?: boolean) => {
-        if (config?.endpoints || isFetching$.get()) return
-
+        if (isFetching$.get()) return
 
         const { days: daysLastUpdated = undefined } = dateTime(configUpdatedAt as DateTime)
             ?.diffNow("days")?.toObject() || {}
 
-        if (daysLastUpdated !== undefined && daysLastUpdated <= 1 && !override) {
+        if (daysLastUpdated !== undefined && Math.abs(daysLastUpdated) < DAYS_BEFORE_REFETCH && !override) {
             return
         }
 
@@ -39,6 +39,14 @@ export function useFetchConfig() {
             updateConfig(config)
         }).catch(e => logError('Error fetching config', e, 'IsNetworkError:', e instanceof NetworkError))
     }
+
+    when(
+        () => config,
+        (v) => {
+            console.log('use-fetch-config', v)
+            fetchData()
+        }
+    )
 
     return {
         fetchFailed, isFetching, fetchData, loaded

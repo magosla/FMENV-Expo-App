@@ -1,7 +1,7 @@
 import { EmptyMonitorsState } from "@/components/empty-monitors-state";
 import { MonitorsList } from "@/components/monitors-list";
 import { ExternalLink } from "@/components/ui/external-link";
-import { Header } from "@/components/ui/header";
+import Logo from "@/components/ui/logo";
 import { ThemedText } from "@/components/ui/themed-text";
 import { ThemedView } from "@/components/ui/themed-view";
 import { useMonitorStore } from "@/hooks/use-monitor-store";
@@ -40,9 +40,10 @@ export default function Index() {
       </ThemedView>
 
       <ThemedView style={styles.footer} bgThemeColor="backgroundPrimary"
-        borderThemeColor="tint"
-        shadowThemeColor="tint">
-        <Image style={styles.footerImage} contentFit="contain" source={require('@/assets/images/logo.png')} />
+        // borderThemeColor="tint"
+        // shadowThemeColor="tint"
+      >
+        <Logo style={styles.footerImage} />
       </ThemedView>
     </ScrollView>
   );
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     paddingRight: 16,
     borderRadius: 50,
-    shadowRadius: 8,
+    // shadowRadius: 8,
   },
   footerImage: {
     width: 150,

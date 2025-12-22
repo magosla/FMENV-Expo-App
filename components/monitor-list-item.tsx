@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 import { ThemedView } from "./ui/themed-view";
 import { ThemedText } from "./ui/themed-text";
 import { CloudDecor } from "./ui/cloud-decor";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 interface MonitorListItemProps {
     monitor: Monitor;
@@ -19,9 +19,11 @@ export function MonitorListItem({ monitor }: MonitorListItemProps) {
             params: { monitorId: monitor.id }
         }}>
             <Link.Trigger>
-                    <ThemedView bgThemeColor="backgroundPrimary" style={styles.container}
+                <ThemedView bgThemeColor="backgroundPrimary" style={styles.container}
                 >
-                    <CloudDecor />
+                    <View style={styles.clip}>
+                        <CloudDecor />
+                    </View>
                     <ThemedView style={styles.pointer}>
                         <ThemedText themeColor="foregroundMuted">
                             <MaterialCommunityIcons name="chevron-right" size={18} style={styles.pointerIcon} />
@@ -55,6 +57,14 @@ export function MonitorListItem({ monitor }: MonitorListItemProps) {
 }
 
 const styles = StyleSheet.create({
+    clip: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        overflow: 'hidden'
+    },
     title: {
         display: 'flex',
         flexDirection: 'row',
@@ -68,14 +78,14 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 16,
-        lineHeight:24,
+        lineHeight: 24,
         fontWeight: '600',
     },
     body: {
         display: 'flex',
         flexDirection: 'column',
         gap: 8,
-        alignItems:'flex-start',
+        alignItems: 'flex-start',
     },
     locationWrapper: {
         flexDirection: 'row',
@@ -107,7 +117,7 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     pointerIcon: {
-        color:'currentColor',
+        color: 'currentColor',
         fontWeight: '600',
     }
 });

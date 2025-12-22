@@ -1,6 +1,5 @@
 import { CloudDecor } from "./ui/cloud-decor";
 import { Monitor } from "@/types/air-quality";
-import { cn } from "@/utils/cn";
 import { ThemedView, ThemedViewProps } from "./ui/themed-view";
 import { Header } from "./ui/header";
 import { ThemedText } from "./ui/themed-text";
@@ -46,9 +45,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
+        paddingVertical: 8,
     },
     header: {
-        marginLeft: 8,
+        marginLeft: 10,
     },
     icon: {
         display: 'flex',

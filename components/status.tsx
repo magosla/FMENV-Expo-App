@@ -5,6 +5,7 @@ import { ThemedText } from "./ui/themed-text"
 import { PropsWithChildren } from "react"
 import { ThemedTouchableOpacity } from "./ui/themed-touchable-opacity"
 import { DimensionValue, StyleSheet } from "react-native"
+import Logo from "./ui/logo"
 
 type Prop = ThemedViewProps & {
     returnHome?: boolean,
@@ -60,9 +61,7 @@ export function Status({ returnHome, style, children, title, showLogo, onReload 
 
             {showLogo && <ThemedView style={styles.footer}>
                 <ThemedLink href={'..'}>
-                    <Image style={styles.footerLogo}
-                        contentFit="contain"
-                        source={require('@/assets/images/logo.png')} />
+                    <Logo style={styles.footerLogo} />
                 </ThemedLink>
             </ThemedView>}
         </ThemedView>

@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   wrapper: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 8,
-    opacity: 0.7,
+    opacity: 0.6,
   },
   body: {
     position: 'relative',

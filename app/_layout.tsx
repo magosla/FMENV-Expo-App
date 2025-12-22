@@ -7,6 +7,7 @@ import { Slot, useGlobalSearchParams, useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
 // import ToastManager from "toastify-react-native/components/ToastManager";
 import SplashScreenController from "@/components/SplashScreenController";
+import BackgroundImage from "@/components/ui/background-image";
 import { ThemedText } from "@/components/ui/themed-text";
 import { ThemedView } from "@/components/ui/themed-view";
 import { useFetchAirQualityError } from "@/hooks/use-fetch-air-quality";
@@ -14,7 +15,6 @@ import { useThemeColor } from "@/hooks/use-theme-color";
 import { AuthError, NetworkError, NotFoundError, ServerError } from "@/types/error";
 import { logError } from "@/utils/log-error";
 import { Ionicons } from "@expo/vector-icons";
-import { ImageBackground } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -31,7 +31,8 @@ const darkTheme: Theme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors, background: 'rgba(0, 0, 0, 0.44)',
-    border: 'rgba(39, 39, 41, 0.24)', }
+    border: 'rgba(39, 39, 41, 0.24)',
+  }
 }
 
 export default function RootLayout() {
@@ -58,7 +59,7 @@ function SafeArea() {
   const backgroundColor = useThemeColor({}, 'background')
   return (<SafeAreaProvider>
     <SafeAreaView
-      style={[style.wrapper, { backgroundColor }]}
+      style={[styles.wrapper, { backgroundColor }]}
       edges={['left', 'right']}
     >
       <SplashScreenController />
@@ -70,16 +71,11 @@ function SafeArea() {
 
 function RootLayoutA() {
   return (
-    <ThemedView style={style.container}>
-      <ImageBackground
-        style={style.bgImage}
-        contentFit="cover"
-        contentPosition="top right"
-        source={require('@/assets/images/cloud_bg.png')}
-      >
+    <ThemedView style={styles.container}>
+      <BackgroundImage>
         <Slot />
         {/* <ToastManager style={style.toast} /> */}
-      </ImageBackground>
+      </BackgroundImage>
     </ThemedView>)
 }
 
@@ -116,16 +112,16 @@ function FetchErrorView() {
   }
 
   return (
-    <ThemedView bgThemeColor="backgroundError" style={[style.errorContainer, { justifyContent: 'center', alignItems: 'center' }]}>
+    <ThemedView bgThemeColor="backgroundError" style={[styles.errorContainer, { justifyContent: 'center', alignItems: 'center' }]}>
       <ThemedText themeColor="foregroundError">
-        <Ionicons name="alert-circle-outline" size={12} />
+        <Ionicons name="alert-circle-outline" size={14} />
       </ThemedText>
-      <ThemedText type="small" themeColor="foregroundError" style={style.errorText}>{error}</ThemedText>
+      <ThemedText type="small" themeColor="foregroundError" style={styles.errorText}>{error}</ThemedText>
     </ThemedView>
   )
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   errorContainer: {
     flexShrink: 1,
     flexDirection: 'row',
@@ -135,7 +131,8 @@ const style = StyleSheet.create({
   errorText: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 2,
+    fontSize: 14,
+    paddingVertical: 3,
     columnGap: 3,
     paddingHorizontal: 2,
   },
@@ -148,9 +145,5 @@ const style = StyleSheet.create({
   wrapper: {
     flex: 1,
     position: 'relative'
-  },
-  bgImage: {
-    flex: 1,
-    justifyContent: 'center'
   }
 })

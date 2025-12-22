@@ -18,7 +18,7 @@ export const PollutionColorMap = ({ style, ...props }: ThemedViewProps) => {
                             type="small"
                             style={[styles.listItem, {
                                 color: colorMap?.[k]?.foreground,
-                                backgroundColor: colorMap?.[k]?.background
+                                backgroundColor: colorMap?.[k]?.background,
                             }]}
                             key={`${k}-${i}`}>{colorMap?.[k]?.title}</ThemedText>
                     ))}
@@ -49,10 +49,12 @@ const styles = StyleSheet.create({
     list: {
         display: 'flex',
         flexDirection: 'row',
+        gap:4,
         flexWrap: 'wrap',
         justifyContent: 'space-between'
     },
     listItem: {
-        padding: 8
+        padding: 8,
+        borderRadius:4,
     },
 });

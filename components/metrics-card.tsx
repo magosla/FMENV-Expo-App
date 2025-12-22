@@ -7,7 +7,7 @@ import { useFetchRecentAirQuality } from "@/hooks/use-fetch-air-quality";
 import { useAirQualityStore } from "@/hooks/use-air-quality-store";
 import { useFocusEffect } from "expo-router";
 import { StyleSheet } from "react-native";
-import { ComponentProps } from "react";
+import { ComponentProps, useCallback, useEffect, useRef } from "react";
 
 interface MetricsCardProps {
     monitor: Monitor | undefined;
@@ -22,8 +22,9 @@ const isAirQualityField = (field: string) => airQualityFields.includes(field)
 export function MetricsCard({ monitor, style }: MetricsCardProps) {
     const { recentAirQualities } = useAirQualityStore()
     const { isFetching, refreshData } = useFetchRecentAirQuality(monitor?.id, true)
+    const triedFetching = useRef(false)
 
-    useFocusEffect(() => {
+    useFocusEffect(useCallback(() => {
         const interval = setInterval(() => {
             refreshData()
         }, 4000)
@@ -31,15 +32,25 @@ export function MetricsCard({ monitor, style }: MetricsCardProps) {
         return () => {
             clearInterval(interval)
         }
-    })
+    }, [refreshData]))
+
+    useEffect(() => {
+        if (isFetching) {
+            triedFetching.current = true
+        }
+    }, [isFetching])
 
     const airQuality = recentAirQualities?.[monitor?.id ?? 'x']
     const lastUpdated = dateTime(airQuality?.captureTime)?.toRelative() || "—"
 
     return (
         <ThemedView bgThemeColor="backgroundPrimary" style={[styles.container, style]}>
-            {isFetching && !airQuality &&
+            {isFetching && !airQuality && !triedFetching.current &&
                 <ThemedView style={styles.loading}><ThemedText type="small">Loading...</ThemedText></ThemedView>
+            }
+
+            {triedFetching.current && !airQuality &&
+                <ThemedText style={styles.noData} type="small">No data available for now</ThemedText>
             }
 
             {airQuality && <ThemedView style={styles.content}>
@@ -74,7 +85,7 @@ export function MetricsCard({ monitor, style }: MetricsCardProps) {
 const styles = StyleSheet.create({
     container: {
         overflow: 'hidden',
-        minHeight: 30,
+        minHeight: 34,
         borderRadius: 8,
         shadowColor: "rgba(0, 0, 0, 0.35)",
         shadowOffset: { width: 0, height: 3 },
@@ -108,5 +119,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 12,
         lineHeight: 16,
+    },
+    noData: {
+        textAlign: 'center',
+        padding: 8,
+        fontSize: 14
     }
 });
