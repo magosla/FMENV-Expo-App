@@ -16,11 +16,6 @@ export default function MonitorDetailPage() {
 
     const backgroundColor = '#0000FF00'
     const monitor = monitors?.[monitorId]
-    // const { setActiveMonitorId } = useMonitorStore();
-
-    // useEffect(() => {
-    //     setActiveMonitorId(monitorId)
-    // }, [monitorId, setActiveMonitorId])
 
     const mapUrl = `https://www.openstreetmap.org/?mlat=${encodeURIComponent(
         monitor.latitude

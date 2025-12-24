@@ -27,7 +27,7 @@ syncObservable(appStore$, {
 })
 
 
-// Create a global observable for the Todos
+// Create a global observable for the Monitors
 export const monitorStore$ = observable<MonitorStore>({
     monitors: {},
     activeMonitorId: undefined,
@@ -54,7 +54,7 @@ syncObservable(monitorStore$, {
     )
 })
 
-// Create a global observable for the Todos
+// Create a global observable for the AirQuality
 export const airQualityStore$ = observable<AirQualityStore>({
     recentAirQualities: {},
     activeRecentAirQuality: (): AirQualityItem | undefined =>

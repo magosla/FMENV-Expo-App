@@ -67,7 +67,9 @@ export function MetricsCard({ monitor, style }: MetricsCardProps) {
                 <ThemedView style={styles.gasGroup}>
                     <ThemedText style={styles.gasGroupTitle}>Air Quality Parameters</ThemedText>
                     <ThemedView style={styles.gasList}>
-                        {Object.keys(airQuality || {}).filter(isAirField).filter(f => isAirQualityField(f))
+                        {Object.keys(airQuality || {})
+                            .filter(isAirField)
+                            .filter(f => isAirQualityField(f))
                             .sort().map((field, i) => <MetricCard gasData={{ name: field, value: (airQuality?.[field] ?? '—') as string }}
                                 key={`${field}-${airQuality?.[field]}`} />)
                         }

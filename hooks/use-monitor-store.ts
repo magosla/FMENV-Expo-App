@@ -23,7 +23,11 @@ export function useMonitorStore() {
     }
 
     function addMonitor(monitor: Monitor) {
-        monitorStore$.monitors.get()[monitor.id] = monitor
+        // monitorStore$.monitors.get()[monitor.id] = monitor
+        monitorStore$.monitors.set({
+            ...monitorStore$.monitors.peek(),
+            [monitor.id]: monitor
+        })
     }
 
     function hasMonitor(monitorId: string): boolean {
