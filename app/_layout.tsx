@@ -1,24 +1,17 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Slot, useLocalSearchParams } from "expo-router";
+import React from "react";
+import RootLayoutView from "@/views/root-layout-view";
 
 export const unstable_settings = {
-  anchor: '(tabs)',
-};
+  initialRouteName: 'index'
+}
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const { monitorId } = useLocalSearchParams<{ monitorId: string }>()
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    <RootLayoutView monitorId={monitorId}>
+      <Slot />
+    </RootLayoutView>
+  )
 }

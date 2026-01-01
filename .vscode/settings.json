@@ -3,5 +3,16 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+  "cSpell.words": [
+    "airquality",
+    "ellipsize",
+    "fmenv",
+    "fmenvairquality",
+    "legendapp",
+    "luxon",
+    "mlon",
+    "Pressable",
+    "worklets"
+  ]
 }
