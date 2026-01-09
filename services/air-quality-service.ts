@@ -28,7 +28,7 @@ export function getRecentAirQuality(endpoint: string, currentItem?: AirQualityIt
     }
 
     return fetchData<Partial<RecentResponse>>(endpoint, isFetching, error).then(d => {
-        return d?.items?.map(i => processRecentResponse(i))?.filter(Boolean) as undefined | Required<ReturnType<typeof processRecentResponse>[]>
+        return d?.items?.map(i => processRecentResponse(i))?.filter(Boolean) as RecentData
     })
 }
 
@@ -36,3 +36,5 @@ type RecentResponse = {
     items?: { monitor: Monitor, air_quality: AirQualityItem }[]
     total?: number
 }
+
+export type RecentData = Required<ReturnType<typeof processRecentResponse>[]>|undefined

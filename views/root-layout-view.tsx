@@ -1,20 +1,17 @@
 import SplashScreenController from "@/components/SplashScreenController";
 import BackgroundImage from "@/components/ui/background-image";
 import { ThemedView } from "@/components/ui/themed-view";
-import { useFetchConfig } from "@/hooks/use-fetch-config";
-import { useFetchMonitors } from "@/hooks/use-fetch-monitor";
-import { useMonitorStore } from "@/hooks/use-monitor-store";
 import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren } from "react";
 import { StyleSheet, useColorScheme } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { FetchErrorView } from "./fetch-error-view";
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { useFetchMonitors } from "@/hooks/use-fetch-monitor";
+import { useAppStore } from "@/hooks/use-app-store";
 
-type RootLayoutViewProps = {
-    monitorId?: string
-} & PropsWithChildren
+type RootLayoutViewProps = PropsWithChildren
 
 const defaultTheme: Theme = {
     ...DefaultTheme,
@@ -28,42 +25,49 @@ const darkTheme: Theme = {
     }
 }
 
-
-export default function RootLayoutView({ monitorId, children }: Readonly<RootLayoutViewProps>) {
-    useFetchMonitors()
-    const { setActiveMonitorId } = useMonitorStore();
-
-    useEffect(() => {
-        setActiveMonitorId(monitorId)
-    }, [monitorId, setActiveMonitorId])
-
+export default function RootLayoutView({ children }: Readonly<RootLayoutViewProps>) {
     const colorScheme = useColorScheme()
 
     return (
-        <ThemeProvider value={colorScheme === 'dark' ? darkTheme : defaultTheme}>
-            <SafeArea monitorId={monitorId}>{children}</SafeArea>
-            <StatusBar style="auto" animated={true} />
-        </ThemeProvider>
+        <>
+            <ThemeProvider value={colorScheme === 'dark' ? darkTheme : defaultTheme}>
+                <SafeArea>
+                    {children}
+                </SafeArea>
+                <StatusBar style="auto" animated={true} />
+            </ThemeProvider>
+            <MonitorsInit />
+        </>
     )
 }
 
+function MonitorsInit() {
+    useFetchMonitors()
+    return null
+}
 
-function SafeArea({ monitorId, children }: Readonly<{ monitorId?: string } & PropsWithChildren>) {
-    const { loaded } = useFetchConfig()
+function SafeArea({ children }: Readonly<PropsWithChildren>) {
     const backgroundColor = useThemeColor({}, 'background')
-    return (<SafeAreaProvider>
-        <SafeAreaView
-            style={[styles.wrapper, { backgroundColor }]}
-            edges={['left', 'right']}
-        >
-            <SplashScreenController />
-            {loaded && <RootLayoutA>{children}</RootLayoutA>}
-            <FetchErrorView monitorId={monitorId} />
-        </SafeAreaView>
-    </SafeAreaProvider>)
+    return (
+        <SafeAreaProvider>
+            <SafeAreaView
+                style={[styles.wrapper, { backgroundColor }]}
+                edges={['left', 'right']}
+            >
+                <SplashScreenController />
+                <RootLayoutA>{children}</RootLayoutA>
+                <FetchErrorView />
+            </SafeAreaView>
+        </SafeAreaProvider>
+    )
 }
 
 function RootLayoutA({ children }: Readonly<PropsWithChildren>) {
+
+    const { config } = useAppStore()
+
+    if (!config?.endpoints) return undefined
+
     return (
         <ThemedView style={styles.container}>
             <BackgroundImage>
@@ -72,7 +76,6 @@ function RootLayoutA({ children }: Readonly<PropsWithChildren>) {
             </BackgroundImage>
         </ThemedView>)
 }
-
 
 const styles = StyleSheet.create({
     container: {

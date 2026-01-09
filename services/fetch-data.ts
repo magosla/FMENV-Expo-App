@@ -1,5 +1,4 @@
 import { AuthError, NetworkError, NotFoundError, ServerError } from "@/types/error";
-import { logger } from "@/utils/logger";
 import { Observable, ObservableBoolean } from "@legendapp/state";
 import axios from 'axios';
 
@@ -17,10 +16,12 @@ export const fetchData = async <T>(endpoint: string, isFetching?: ObservableBool
             error?.set(undefined)
             return response.data
         })
-        .catch((d) => {
-            throwError(d, error)
+        .catch((error_) => {
+            throwError(error_, error)
         })
-        .finally(() => { isFetching?.set(false) })
+        .finally(() => {
+            isFetching?.set(false)
+        })
 }
 
 function throwError(e: unknown, errorBag?: Observable<Error | undefined>): never {
@@ -43,7 +44,7 @@ function throwError(e: unknown, errorBag?: Observable<Error | undefined>): never
     }
 
     errorBag?.set((err || e) as Error);
-    logger.log('Fetch data error now:', errorBag?.peek())
+    // logger.log('Fetch data error now:', errorBag?.peek())
 
     throw err || e;
 }

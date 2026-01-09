@@ -2,27 +2,25 @@ import { ThemedText } from "@/components/ui/themed-text"
 import { ThemedView } from "@/components/ui/themed-view"
 import { useFetchAirQualityError } from "@/hooks/use-fetch-air-quality"
 import { useFetchMonitorsError } from "@/hooks/use-fetch-monitor"
+import { useGlobalSearchParams } from "expo-router";
 import { AuthError, NetworkError, NotFoundError, ServerError } from "@/types/error"
 import { logger } from "@/utils/logger"
 import { Ionicons } from "@expo/vector-icons"
 import { StyleSheet } from "react-native"
 
 
-interface FetchErrorViewProp {
-    readonly monitorId?: string
-}
-
-export function FetchErrorView({ monitorId }: FetchErrorViewProp) {
+export function FetchErrorView() {
+    const { monitorId } = useGlobalSearchParams<{ monitorId?: string }>()
     const { fetchError } = useFetchAirQualityError(monitorId)
     const { fetchError: monitorFetchError } = useFetchMonitorsError()
 
-    logger.log('FetchErrorView fetchError:', fetchError, monitorId)
-    if (!fetchError) {
+    logger.log('FetchErrorView fetchError:', fetchError, monitorFetchError, monitorId)
+
+    const errorObject = monitorFetchError ?? fetchError
+    if (!errorObject) {
         return null
     }
     let error = ''
-
-    const errorObject = monitorFetchError ?? fetchError
 
     switch (true) {
         case errorObject instanceof NetworkError:

@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
         height: 80,
         borderRadius: 9999,
         marginBottom: 16,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+
     },
     iconText: {
         fontSize: 36,

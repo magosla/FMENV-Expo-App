@@ -1,10 +1,11 @@
-import { getRecentAirQuality } from "@/services/air-quality-service";
+import { getRecentAirQuality, RecentData } from "@/services/air-quality-service";
 import { dateTime } from "@/utils/date-time";
 import { batch, observable, when, type Observable } from "@legendapp/state";
 import { useValue } from "@legendapp/state/react";
 import { useAirQualityStore } from "./use-air-quality-store";
 import { useAppStore } from "./use-app-store";
 import { useMonitorStore } from "./use-monitor-store";
+import { logger } from "@/utils/logger";
 
 const connection_failed$ = observable<Record<string, Error | undefined>>({})
 const fetching_data$ = observable<Record<string, boolean>>({})
@@ -16,7 +17,7 @@ function toValue<T>(value?: T | Observable<T>) {
         return value
     }
 
-    return ((value as Observable)?.get() || value) as T
+    return ((value as Observable)?.peek() || value) as T
 }
 
 export function useFetchAirQualityError(monitorId?: string | Observable<string>) {
@@ -30,11 +31,9 @@ export function useFetchRecentAirQuality(monitorId?: string | Observable<string>
     const { updateRecentAirQuality, setRecentAirQualities, recentAirQualities } = useAirQualityStore()
     const { config } = useAppStore()
 
-    const isFetching = useValue(() => fetching_data$[toValue(monitorId) ?? ''].get() as boolean)
-    const fetchFailed = useValue(() => connection_failed$[toValue(monitorId) ?? ''].get() !== undefined)
-    const SECONDS_BEFORE_REFETCH = 30
+    const SECONDS_BEFORE_REFETCH = 10
 
-    const fetchData = () => {
+    function fetchData() {
         const _monitorId = toValue(monitorId)
         if (config === undefined || (requireMonitor && _monitorId === undefined)) return
         const urlTpl = config?.endpoints.recent_air_quality;
@@ -61,31 +60,7 @@ export function useFetchRecentAirQuality(monitorId?: string | Observable<string>
             fetching_data$[_monitorId ?? ''],
             connection_failed$[_monitorId ?? '']
         )
-            ?.then(d => {
-                if (!d || d.length === 0) return
-
-                batch(() => {
-                    if (_monitorId) {
-                        if (d[0]?.monitor !== undefined) addMonitor(d[0]?.monitor)
-                        if (d[0]?.airQuality !== undefined) updateRecentAirQuality(d[0])
-
-                        return
-                    }
-
-                    setMonitor(d.map(i => i.monitor))
-                    setRecentAirQualities(d)
-                })
-
-                // if (_monitorId) {
-                //     if (d[0]?.monitor !== undefined) addMonitor(d[0]?.monitor)
-                //     if (d[0]?.airQuality !== undefined) updateRecentAirQuality(d[0])
-
-                //     return
-                // }
-
-                // setMonitor(d.map(i => i.monitor))
-                // setRecentAirQualities(d)
-            })?.catch((e) => {
+            ?.then(d => handleResponse(d, _monitorId))?.catch((e) => {
                 logger.log('Error fetching recent air quality:', e)
             })
             ?.finally(() => {
@@ -93,13 +68,34 @@ export function useFetchRecentAirQuality(monitorId?: string | Observable<string>
             })
     }
 
+    function handleResponse(data: RecentData, monitorId?: string) {
+        if (!data || data.length === 0) return
+
+        batch(() => {
+            if (monitorId) {
+                if (data[0]?.monitor !== undefined) addMonitor(data[0]?.monitor)
+                if (data[0]?.airQuality !== undefined) updateRecentAirQuality(data[0])
+
+                return
+            }
+
+            setMonitor(data.map(i => i.monitor))
+            setRecentAirQualities(data)
+        })
+    }
+
     when(
-        () => config,
+        config,
         (v) => {
-            if (v === undefined) return
+            if (v?.endpoints === undefined) return
+            logger.log('useFetchRecentAirQuality ', v)
             fetchData()
         }
     )
 
-    return { refreshData: fetchData, isFetching, fetchFailed }
+    return {
+        refreshData: fetchData,
+        isFetching: useValue(fetching_data$[toValue(monitorId) ?? '']),
+        fetchFailed: useValue(() => connection_failed$[toValue(monitorId) ?? ''].get() !== undefined)
+    }
 }
