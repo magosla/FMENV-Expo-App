@@ -1,5 +1,5 @@
 import { useAirQualityStore } from "@/hooks/use-air-quality-store";
-import { useFetchRecentAirQuality } from "@/hooks/use-fetch-air-quality";
+import { useAirQualityFetchState, useFetchRecentAirQuality } from "@/hooks/use-fetch-air-quality";
 import type { Monitor } from "@/types/air-quality";
 import { dateTime } from "@/utils/date-time";
 import { logger } from "@/utils/logger";
@@ -22,7 +22,8 @@ const isAirQualityField = (field: string) => airQualityFields.has(field)
 
 export function MetricsCard({ monitor, style }: MetricsCardProps) {
     const { recentAirQualities } = useAirQualityStore()
-    const { isFetching, refreshData } = useFetchRecentAirQuality(monitor?.id, true)
+    const { refreshData } = useFetchRecentAirQuality(monitor?.id, true)
+    const { isFetching } = useAirQualityFetchState(monitor?.id)
     const triedFetching = useRef(false)
 
     useEffect(() => {

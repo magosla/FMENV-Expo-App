@@ -14,7 +14,7 @@ const error$ = observable<Error | undefined>()
 let isLoading = false
 
 export function useFetchConfigError() {
-    const fetchError = useValue(() => error$.get())
+    const fetchError = useValue(error$)
 
     return { fetchError }
 }
@@ -44,9 +44,9 @@ export function useFetchConfig() {
     }, [updateConfig])
 
     return {
-        fetchFailed: useValue(() => error$.get() !== undefined),
+        fetchFailed: useValue(error$) !== undefined,
         isFetching: useValue(isFetching$),
         fetchData,
-        loaded: useValue(() => config?.endpoints !== undefined)
+        loaded: useValue(config?.endpoints) !== undefined
     }
 }

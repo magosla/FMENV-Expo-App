@@ -21,10 +21,16 @@ function toValue<T>(value?: T | Observable<T>) {
     return ((value as Observable)?.peek() || value) as T
 }
 
-export function useFetchAirQualityError(monitorId?: string | Observable<string>) {
-    const fetchError = useValue(() => connection_failed$[toValue(monitorId) ?? ''].get())
+export function useAirQualityFetchError(monitorId?: string | Observable<string>) {
+    const fetchError = useValue(connection_failed$[toValue(monitorId) ?? ''])
 
     return { fetchError }
+}
+
+export function useAirQualityFetchState(monitorId?: string | Observable<string>) {
+    const isFetching = useValue(fetching_data$[toValue(monitorId) ?? ''])
+
+    return { isFetching }
 }
 
 export function useFetchRecentAirQuality(monitorId?: string | Observable<string>, requireMonitor?: boolean) {
@@ -90,7 +96,5 @@ export function useFetchRecentAirQuality(monitorId?: string | Observable<string>
 
     return {
         refreshData: fetchData,
-        isFetching: useValue(fetching_data$[toValue(monitorId) ?? '']),
-        fetchFailed: useValue(() => connection_failed$[toValue(monitorId) ?? ''].get() !== undefined)
     }
 }

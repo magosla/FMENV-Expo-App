@@ -1,14 +1,14 @@
 import { getMonitors } from "@/services/monitor-service"
+import { monitorStore$ } from "@/stores"
+import { NetworkError } from "@/types/error"
 import { dateTime } from "@/utils/date-time"
 import { logger } from "@/utils/logger"
 import { observable } from "@legendapp/state"
 import { useValue } from "@legendapp/state/react"
 import { DateTime } from "luxon"
+import { useCallback, useEffect } from "react"
 import { useAppStore } from "./use-app-store"
 import { useMonitorStore } from "./use-monitor-store"
-import { useCallback, useEffect } from "react"
-import { NetworkError } from "@/types/error"
-import { monitorStore$ } from "@/stores"
 
 const isFetching$ = observable(false)
 const error$ = observable<Error | undefined>(undefined)
@@ -16,10 +16,16 @@ const error$ = observable<Error | undefined>(undefined)
 let isLoading = false
 let refetchInterval: number | undefined = undefined
 
-export function useFetchMonitorsError() {
-    const fetchError = useValue(() => error$.get())
+export function useMonitorsFetchError() {
+    const fetchError = useValue(error$)
 
     return { fetchError }
+}
+
+export function useMonitorsFetchState() {
+    const isFetching = useValue(isFetching$)
+
+    return { isFetching }
 }
 
 type FetchDataOptions = { override?: boolean, retryOnError?: boolean } | undefined
@@ -77,8 +83,6 @@ export function useFetchMonitors() {
     }, [config?.endpoints, setMonitor])
 
     return {
-        isFetching: useValue(isFetching$),
-        fetchFailed: useValue(() => !error$.get()),
         fetchData
     }
 }

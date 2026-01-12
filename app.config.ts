@@ -92,6 +92,14 @@ export default {
         },
       },
     ],
+    [
+      "@sentry/react-native/expo",
+      {
+        "url": "https://sentry.io/",
+        "project": "fmenv-airquality",
+        "organization": "magnus-x0"
+      }
+    ],
     "expo-maps",
   ],
   experiments: {

@@ -1,8 +1,41 @@
 import { StyleSheet } from "react-native";
 import { ThemedText } from "./ui/themed-text";
 import { ThemedView } from "./ui/themed-view";
+import { useMonitorsFetchState } from "@/hooks/use-fetch-monitor";
+import Animated, { CSSAnimationKeyframes } from "react-native-reanimated";
+
+const pulse: CSSAnimationKeyframes = {
+    '0%': { transform: [{ scale: 1 }, { rotateZ: '-25deg' }] },
+    '50%': { transform: [{ scale: 1.2 }, { rotateZ: '25deg' }] },
+    '100%': { transform: [{ scale: 0.8 }, { rotateZ: '-50deg' }] },
+};
+
+export function LoadingMonitorsState() {
+    return (
+        <ThemedView style={styles.container}>
+            <ThemedView style={styles.wrapper}>
+                <ThemedView bgThemeColor="backgroundSecondary" style={styles.iconWrap}>
+                    <Animated.Text
+                        style={[styles.iconText, {
+                            animationName: pulse,
+                            animationIterationCount: "infinite",
+                            animationDuration: '1500ms',
+                        }]}>
+                        📡
+                    </Animated.Text>
+                </ThemedView>
+            </ThemedView>
+        </ThemedView>
+    );
+}
 
 export function EmptyMonitorsState() {
+    const { isFetching } = useMonitorsFetchState()
+
+    if (isFetching) {
+        return <LoadingMonitorsState />
+    }
+
     return (
         <ThemedView style={styles.container}>
             <ThemedView style={styles.wrapper}>

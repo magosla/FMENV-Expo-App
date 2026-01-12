@@ -15,7 +15,6 @@ function setMonitor(newMonitors: Monitor[]) {
 }
 
 function addMonitor(monitor: Monitor) {
-    // monitorStore$.monitors.get()[monitor.id] = monitor
     monitorStore$.monitors.set({
         ...monitorStore$.monitors.peek(),
         [monitor.id]: monitor
