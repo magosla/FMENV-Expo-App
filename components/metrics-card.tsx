@@ -1,13 +1,14 @@
+import { useAirQualityStore } from "@/hooks/use-air-quality-store";
+import { useFetchRecentAirQuality } from "@/hooks/use-fetch-air-quality";
 import type { Monitor } from "@/types/air-quality";
 import { dateTime } from "@/utils/date-time";
-import { MetricCard } from "./metric-card";
-import { ThemedView } from "./ui/themed-view";
-import { ThemedText } from "./ui/themed-text";
-import { useFetchRecentAirQuality } from "@/hooks/use-fetch-air-quality";
-import { useAirQualityStore } from "@/hooks/use-air-quality-store";
+import { logger } from "@/utils/logger";
 import { useFocusEffect } from "expo-router";
-import { StyleSheet } from "react-native";
 import { ComponentProps, useCallback, useEffect, useRef } from "react";
+import { StyleSheet } from "react-native";
+import { MetricCard } from "./metric-card";
+import { ThemedText } from "./ui/themed-text";
+import { ThemedView } from "./ui/themed-view";
 
 interface MetricsCardProps {
     readonly monitor: Monitor | undefined;
@@ -24,17 +25,25 @@ export function MetricsCard({ monitor, style }: MetricsCardProps) {
     const { isFetching, refreshData } = useFetchRecentAirQuality(monitor?.id, true)
     const triedFetching = useRef(false)
 
+    useEffect(() => {
+        logger.log('calling first useEffect')
+        refreshData()
+    }, [refreshData])
+
     useFocusEffect(useCallback(() => {
+        logger.log('calling useFocusEffect')
         const interval = setInterval(() => {
             refreshData()
-        }, 4000)
+        }, Number.parseInt(process.env.EXPO_PUBLIC_AIR_REFRESH_INTERVAL_SECONDS ?? '4') * 1000)
 
         return () => {
+            logger.log('clearInterval(interval)')
             clearInterval(interval)
         }
     }, [refreshData]))
 
     useEffect(() => {
+        logger.log('calling second useEffect')
         if (isFetching) {
             triedFetching.current = true
         }

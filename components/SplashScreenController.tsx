@@ -1,5 +1,6 @@
-import { useFetchConfig } from "@/hooks/use-fetch-config";
+import { useFetchConfig, useFetchConfigError } from "@/hooks/use-fetch-config";
 import { logger } from "@/utils/logger";
+import { RequestErrorView } from "@/views/request-error-view";
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from "react";
 import { Status } from "./status";
@@ -43,7 +44,9 @@ export default function SplashScreenController() {
     }
 
     if (fetchFailed) {
-        return (<Status title="Status" showLogo={true} onReload={fetchData}>
+        return (<Status title="Status" showLogo={true} onReload={fetchData}
+            footer={<ConfigFetchErrorView />}
+        >
             <ThemedText themeColor="foregroundWarning">
                 Error starting up
             </ThemedText>
@@ -51,4 +54,12 @@ export default function SplashScreenController() {
     }
 
     return null;
+}
+
+function ConfigFetchErrorView() {
+    const { fetchError } = useFetchConfigError()
+
+    return (
+        <RequestErrorView errorObject={fetchError} />
+    )
 }

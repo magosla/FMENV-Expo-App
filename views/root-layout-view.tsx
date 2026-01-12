@@ -2,14 +2,14 @@ import SplashScreenController from "@/components/SplashScreenController";
 import BackgroundImage from "@/components/ui/background-image";
 import { ThemedView } from "@/components/ui/themed-view";
 import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { StyleSheet, useColorScheme } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { FetchErrorView } from "./fetch-error-view";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useFetchMonitors } from "@/hooks/use-fetch-monitor";
 import { useAppStore } from "@/hooks/use-app-store";
+import { logger } from "@/utils/logger";
 
 type RootLayoutViewProps = PropsWithChildren
 
@@ -34,7 +34,6 @@ export default function RootLayoutView({ children }: Readonly<RootLayoutViewProp
                 <SafeArea>
                     {children}
                 </SafeArea>
-                <StatusBar style="auto" animated={true} />
             </ThemeProvider>
             <MonitorsInit />
         </>
@@ -42,7 +41,14 @@ export default function RootLayoutView({ children }: Readonly<RootLayoutViewProp
 }
 
 function MonitorsInit() {
-    useFetchMonitors()
+    const { config } = useAppStore()
+    const { fetchData } = useFetchMonitors()
+
+    useEffect(() => {
+        logger.log('MonitorsInit','useEffect')
+        fetchData({ retryOnError: true })
+    }, [config, fetchData])
+
     return null
 }
 

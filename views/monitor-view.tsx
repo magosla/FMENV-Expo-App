@@ -20,7 +20,7 @@ export default function MonitorView({ monitorId }: Readonly<MonitorViewProp>) {
     const backgroundColor = '#0000FF00'
     const monitor = monitors?.[monitorId]
 
-    const mapUrl = `https://www.openstreetmap.org/?mlat=${encodeURIComponent(
+    const mapUrl = monitor===undefined ? undefined : `https://www.openstreetmap.org/?mlat=${encodeURIComponent(
         monitor.latitude
     )}&mlon=${encodeURIComponent(monitor.longitude)}#map=15/${encodeURIComponent(
         monitor.latitude
@@ -34,13 +34,13 @@ export default function MonitorView({ monitorId }: Readonly<MonitorViewProp>) {
                 contentContainerStyle={styles.scrollViewContent}
                 style={[styles.scrollView, { backgroundColor }]}
             >
-                <MonitorInfo monitor={monitor} style={styles.monitorInfo} />
+                {monitor && <MonitorInfo monitor={monitor} style={styles.monitorInfo} />}
                 <MonitorSection monitorId={monitorId} style={styles.monitorSection} />
                 <PollutionColorMap style={styles.pollutionColor} />
                 <View style={styles.spacer} />
             </ScrollView>
 
-            <ThemedLink
+            {mapUrl && <ThemedLink
                 asChild={true}
                 href={mapUrl || ''}
                 external={true}
@@ -59,7 +59,7 @@ export default function MonitorView({ monitorId }: Readonly<MonitorViewProp>) {
                         weight="medium"
                     />
                 </ThemedTouchableOpacity>
-            </ThemedLink>
+            </ThemedLink>}
         </>
     );
 }

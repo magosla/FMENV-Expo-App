@@ -1,19 +1,20 @@
-import { PropsWithChildren } from "react"
+import { PropsWithChildren, ReactNode } from "react"
 import { DimensionValue, StyleSheet } from "react-native"
 import Logo from "./ui/logo"
 import { ThemedLink } from "./ui/themed-link"
 import { ThemedText } from "./ui/themed-text"
-import { ThemedView, ThemedViewProps } from "./ui/themed-view"
 import { ThemedTouchableOpacity } from "./ui/themed-touchable-opacity"
+import { ThemedView, ThemedViewProps } from "./ui/themed-view"
 
 type Prop = ThemedViewProps & {
     returnHome?: boolean,
     title: string,
     onReload?: () => void,
     showLogo?: boolean
+    footer?: ReactNode
 } & PropsWithChildren
 
-export function Status({ returnHome, style, children, title, showLogo, onReload }: Prop) {
+export function Status({ returnHome, style, children, title, footer, showLogo, onReload }: Prop) {
     return (
         <ThemedView style={[styles.container, style]}>
             <ThemedView style={styles.main}>
@@ -58,11 +59,12 @@ export function Status({ returnHome, style, children, title, showLogo, onReload 
                 </ThemedView>
             </ThemedView>
 
-            {showLogo && <ThemedView style={styles.footer}>
+            {showLogo && <ThemedView style={styles.logoWrapper}>
                 <ThemedLink href={'..'}>
                     <Logo style={styles.footerLogo} />
                 </ThemedLink>
             </ThemedView>}
+            {footer}
         </ThemedView>
     )
 }
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flex: 1,
         flexDirection: 'column',
-        alignItems: 'center',
+        // alignItems: 'center',
         gap: 8
     },
     body: {
@@ -123,7 +125,8 @@ const styles = StyleSheet.create({
         width: 'fit-content' as DimensionValue,
         textAlign: 'center'
     },
-    footer: {
+    logoWrapper: {
+        alignItems: 'center',
         padding: 8,
         paddingBottom: 16,
     },

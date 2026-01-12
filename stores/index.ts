@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 enableReactTracking({
     warnMissingUse: true,
+    warnUnobserved:true,
 })
 
 // Create a global observable for the Todos
@@ -33,7 +34,7 @@ export const monitorStore$ = observable<MonitorStore>({
     activeMonitorId: undefined,
     activeMonitor: (): Monitor | undefined => monitorStore$.monitors.get()[monitorStore$.activeMonitorId.get() ?? '-'],
     lastUpdatedAt: undefined,
-    setActiveId: (id?: string):void => monitorStore$.activeMonitorId.set(id),
+    setActiveId: (id?: string): void => monitorStore$.activeMonitorId.set(id),
 });
 
 // Persist the observable to the named key of the global persist plugin
@@ -46,7 +47,7 @@ syncObservable(monitorStore$, {
         transformStringifyDates(),
         {
             load: async (value) => {
-                value.lastUpdatedAt = dateTime(value.lastUpdatedAt)
+                value.lastUpdatedAt = dateTime(value.lastUpdatedAt ?? undefined)
 
                 return value
             },

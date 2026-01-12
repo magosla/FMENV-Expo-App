@@ -1,11 +1,12 @@
 import { getRecentAirQuality, RecentData } from "@/services/air-quality-service";
+import { airQualityStore$, appStore$ } from "@/stores";
 import { dateTime } from "@/utils/date-time";
-import { batch, observable, when, type Observable } from "@legendapp/state";
-import { useValue } from "@legendapp/state/react";
-import { useAirQualityStore } from "./use-air-quality-store";
-import { useAppStore } from "./use-app-store";
-import { useMonitorStore } from "./use-monitor-store";
 import { logger } from "@/utils/logger";
+import { batch, observable, type Observable } from "@legendapp/state";
+import { useValue } from "@legendapp/state/react";
+import { useCallback } from "react";
+import { useAirQualityStore } from "./use-air-quality-store";
+import { useMonitorStore } from "./use-monitor-store";
 
 const connection_failed$ = observable<Record<string, Error | undefined>>({})
 const fetching_data$ = observable<Record<string, boolean>>({})
@@ -28,13 +29,28 @@ export function useFetchAirQualityError(monitorId?: string | Observable<string>)
 
 export function useFetchRecentAirQuality(monitorId?: string | Observable<string>, requireMonitor?: boolean) {
     const { addMonitor, setMonitor } = useMonitorStore()
-    const { updateRecentAirQuality, setRecentAirQualities, recentAirQualities } = useAirQualityStore()
-    const { config } = useAppStore()
+    const { updateRecentAirQuality, setRecentAirQualities } = useAirQualityStore()
 
-    const SECONDS_BEFORE_REFETCH = 10
+    const handleResponse = useCallback((data: RecentData, monitorId?: string) => {
+        if (!data || data.length === 0) return
 
-    function fetchData() {
+        batch(() => {
+            if (monitorId) {
+                if (data[0]?.monitor !== undefined) addMonitor(data[0]?.monitor)
+                if (data[0]?.airQuality !== undefined) updateRecentAirQuality(data[0])
+
+                return
+            }
+
+            setMonitor(data.map(i => i.monitor))
+            setRecentAirQualities(data)
+        })
+    }, [addMonitor, setMonitor, setRecentAirQualities, updateRecentAirQuality])
+
+    const fetchData = useCallback(() => {
         const _monitorId = toValue(monitorId)
+        const config = appStore$.config.peek()
+
         if (config === undefined || (requireMonitor && _monitorId === undefined)) return
         const urlTpl = config?.endpoints.recent_air_quality;
 
@@ -44,7 +60,11 @@ export function useFetchRecentAirQuality(monitorId?: string | Observable<string>
             return;
         }
 
+        const recentAirQualities = airQualityStore$.recentAirQualities.peek()
+
         let currentItem = recentAirQualities?.[_monitorId ?? '']
+
+        const SECONDS_BEFORE_REFETCH = Number.parseInt(process.env.EXPO_PUBLIC_AIR_CACHE_SECONDS ?? '3')
         const { seconds: lastFetchedInSecs = undefined } = dateTime(currentItem?.fetchedAt)?.diffNow("seconds")?.toObject() || {}
         if (lastFetchedInSecs !== undefined && Math.abs(lastFetchedInSecs) < SECONDS_BEFORE_REFETCH) {
             return
@@ -66,32 +86,7 @@ export function useFetchRecentAirQuality(monitorId?: string | Observable<string>
             ?.finally(() => {
                 delete is_loading[_monitorId ?? ''];
             })
-    }
-
-    function handleResponse(data: RecentData, monitorId?: string) {
-        if (!data || data.length === 0) return
-
-        batch(() => {
-            if (monitorId) {
-                if (data[0]?.monitor !== undefined) addMonitor(data[0]?.monitor)
-                if (data[0]?.airQuality !== undefined) updateRecentAirQuality(data[0])
-
-                return
-            }
-
-            setMonitor(data.map(i => i.monitor))
-            setRecentAirQualities(data)
-        })
-    }
-
-    when(
-        config,
-        (v) => {
-            if (v?.endpoints === undefined) return
-            logger.log('useFetchRecentAirQuality ', v)
-            fetchData()
-        }
-    )
+    }, [handleResponse, monitorId, requireMonitor])
 
     return {
         refreshData: fetchData,
