@@ -1,21 +1,23 @@
 import { useThemeColor } from "@/hooks/use-theme-color";
-import { Monitor } from "@/types/air-quality";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
 import { CloudDecor } from "./ui/cloud-decor";
 import { Header } from "./ui/header";
 import { ThemedText } from "./ui/themed-text";
 import { ThemedView, ThemedViewProps } from "./ui/themed-view";
+import { monitorStore$ } from "@/stores/monitor";
+import { useValue } from "@legendapp/state/react";
 
 type Props = ThemedViewProps & {
-    monitor?: Monitor
+    monitorId: string
 }
 
-export function MonitorInfo({ monitor, style }: Props) {
+export function MonitorInfo({ monitorId, style }: Props) {
     const mutedColor = useThemeColor({}, 'foregroundMuted')
-    return (
+    const monitor = useValue(monitorStore$.monitor(monitorId))
+    return monitor && (
         <ThemedView style={[styles.container, style]}>
-            <ThemedView bgThemeColor="backgroundPrimary" style={styles.wrapper}>
+            <ThemedView style={styles.wrapper}>
                 <Header style={styles.header}>{monitor?.name}</Header>
                 <ThemedView style={styles.body}>
                     <Ionicons style={[styles.icon, { color: mutedColor }]} size={14} name="location" />
@@ -37,14 +39,14 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         overflow: 'hidden',
         position: 'relative',
-        shadowColor: "rgba(0, 0, 0, 0.35)",
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        // shadowColor: "rgba(0, 0, 0, 0.35)",
+        // shadowOffset: {
+        //     width: 0,
+        //     height: 3,
+        // },
+        // shadowOpacity: 0.25,
+        // shadowRadius: 3.84,
+        // elevation: 5,
         paddingVertical: 8,
     },
     header: {

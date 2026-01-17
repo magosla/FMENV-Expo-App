@@ -3,9 +3,10 @@ import { MonitorSection } from "@/components/monitor-section";
 import { PollutionColorMap } from "@/components/pollution-color-map";
 import { ThemedLink } from "@/components/ui/themed-link";
 import { ThemedTouchableOpacity } from "@/components/ui/themed-touchable-opacity";
-import { useMonitorStore } from "@/hooks/use-monitor-store";
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { monitorStore$ } from "@/stores/monitor";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useValue } from "@legendapp/state/react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 type MonitorViewProp = {
@@ -13,18 +14,7 @@ type MonitorViewProp = {
 }
 
 export default function MonitorView({ monitorId }: Readonly<MonitorViewProp>) {
-    const { monitors } = useMonitorStore()
-
-    const secondaryColor = useThemeColor({}, 'foregroundSecondary');
-
     const backgroundColor = '#0000FF00'
-    const monitor = monitors?.[monitorId]
-
-    const mapUrl = monitor===undefined ? undefined : `https://www.openstreetmap.org/?mlat=${encodeURIComponent(
-        monitor.latitude
-    )}&mlon=${encodeURIComponent(monitor.longitude)}#map=15/${encodeURIComponent(
-        monitor.latitude
-    )}/${encodeURIComponent(monitor.longitude)}`
 
     return (
         <>
@@ -34,34 +24,53 @@ export default function MonitorView({ monitorId }: Readonly<MonitorViewProp>) {
                 contentContainerStyle={styles.scrollViewContent}
                 style={[styles.scrollView, { backgroundColor }]}
             >
-                {monitor && <MonitorInfo monitor={monitor} style={styles.monitorInfo} />}
+                <MonitorInfo monitorId={monitorId} style={styles.monitorInfo} />
                 <MonitorSection monitorId={monitorId} style={styles.monitorSection} />
                 <PollutionColorMap style={styles.pollutionColor} />
                 <View style={styles.spacer} />
             </ScrollView>
 
-            {mapUrl && <ThemedLink
-                asChild={true}
-                href={mapUrl || ''}
-                external={true}
-                bgThemeColor="backgroundSecondary"
-                themeColor="foregroundSecondary"
-                borderThemeColor="foregroundSecondary"
-                style={styles.link}
-            >
-                <ThemedTouchableOpacity
-                    style={styles.button}
-                    activeOpacity={0.8}>
-                    <MaterialIcons
-                        name="map"
-                        size={30}
-                        color={secondaryColor}
-                        weight="medium"
-                    />
-                </ThemedTouchableOpacity>
-            </ThemedLink>}
+            <MapFloatButton monitorId={monitorId} />
         </>
     );
+}
+
+type MapFloatButtonProp = {
+    monitorId: string
+}
+function MapFloatButton({ monitorId }: MapFloatButtonProp) {
+    const monitor = useValue(monitorStore$.monitor(monitorId))
+
+    const secondaryColor = useThemeColor({}, 'foregroundSecondary');
+
+    const mapUrl = monitor === undefined ? undefined : `https://www.openstreetmap.org/?mlat=${encodeURIComponent(
+        monitor.latitude
+    )}&mlon=${encodeURIComponent(monitor.longitude)}#map=15/${encodeURIComponent(
+        monitor.latitude
+    )}/${encodeURIComponent(monitor.longitude)}`
+
+
+    return mapUrl && (<ThemedLink
+        asChild={true}
+        href={mapUrl || ''}
+        external={true}
+        bgThemeColor="backgroundSecondary"
+        themeColor="foregroundSecondary"
+        borderThemeColor="foregroundSecondary"
+        style={styles.link}
+    >
+        <ThemedTouchableOpacity
+            style={styles.button}
+            activeOpacity={0.8}>
+            <MaterialIcons
+                name="map"
+                size={30}
+                color={secondaryColor}
+                weight="medium"
+            />
+        </ThemedTouchableOpacity>
+    </ThemedLink>)
+
 }
 
 const styles = StyleSheet.create({

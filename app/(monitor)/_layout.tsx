@@ -37,7 +37,7 @@ export default function MonitorLayout() {
     const colorScheme = useColorScheme()
     const color = useThemeColor({}, 'foregroundPrimary')
     const isIOS = Platform.OS === 'ios'
-    const headerBackgroundColor = colorScheme === 'dark' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.04)'
+    const headerBackgroundColor = colorScheme === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.04)'
 
     return (
         <Stack

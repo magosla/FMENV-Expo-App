@@ -10,7 +10,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "update-preview-channel": "eas update --channel preview"
+    "update-development-channel": "eas update --channel development -p all --clear-cache",
+    "update-preview-channel": "eas update --channel preview -p all --clear-cache"
   },
   "dependencies": {
     "@expo/json-file": "^10.0.8",

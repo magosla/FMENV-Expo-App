@@ -1,4 +1,4 @@
-import { useFetchConfig, useFetchConfigError } from "@/hooks/use-fetch-config";
+import { useConfigFetchError, useFetchConfig } from "@/hooks/use-fetch-config";
 import { logger } from "@/utils/logger";
 import { RequestErrorView } from "@/views/request-error-view";
 import * as SplashScreen from 'expo-splash-screen';
@@ -57,7 +57,7 @@ export default function SplashScreenController() {
 }
 
 function ConfigFetchErrorView() {
-    const { fetchError } = useFetchConfigError()
+    const { fetchError } = useConfigFetchError()
 
     return (
         <RequestErrorView errorObject={fetchError} />

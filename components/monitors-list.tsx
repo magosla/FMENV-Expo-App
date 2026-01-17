@@ -12,7 +12,7 @@ export function MonitorsList({ monitors, style }: MonitorsListProps) {
     return (
         <FlatList
             style={style}
-            data={monitors.toSorted((a, b) => a.name?.localeCompare(b.name ?? ''))}
+            data={monitors.sort((a, b) => a.name?.localeCompare(b.name ?? ''))}
             renderItem={({ item }) => (
                 <MonitorListItem
                     monitor={item}

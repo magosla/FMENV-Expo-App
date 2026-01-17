@@ -1,5 +1,5 @@
+import { appStore$ } from "@/stores/app";
 import { Gas } from "@/types/core";
-import { appStore$ } from "@/stores";
 
 type GasState = 'good' | 'moderate' | 'unhealthy_for_sensitive_groups' | 'unhealthy' | 'vunhealthy' | 'hazardous';
 

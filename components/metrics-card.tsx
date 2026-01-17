@@ -1,6 +1,4 @@
-import { useAirQualityStore } from "@/hooks/use-air-quality-store";
 import { useAirQualityFetchState, useFetchRecentAirQuality } from "@/hooks/use-fetch-air-quality";
-import type { Monitor } from "@/types/air-quality";
 import { dateTime } from "@/utils/date-time";
 import { logger } from "@/utils/logger";
 import { useFocusEffect } from "expo-router";
@@ -9,9 +7,11 @@ import { StyleSheet } from "react-native";
 import { MetricCard } from "./metric-card";
 import { ThemedText } from "./ui/themed-text";
 import { ThemedView } from "./ui/themed-view";
+import { airQualityStore$ } from "@/stores/recent-air-quality";
+import { useValue } from "@legendapp/state/react";
 
 interface MetricsCardProps {
-    readonly monitor: Monitor | undefined;
+    readonly monitorId: string;
     readonly style?: ComponentProps<typeof ThemedView>['style'];
 }
 const airQualityFields = new Set(['aqi', 'co', 'co2', 'no2', 'ozone', 'tvoc', 'pm10', 'pm2_5'])
@@ -20,10 +20,10 @@ const isAirField = (field: string) => !['id', 'captureTime', 'captured_at', 'fet
 
 const isAirQualityField = (field: string) => airQualityFields.has(field)
 
-export function MetricsCard({ monitor, style }: MetricsCardProps) {
-    const { recentAirQualities } = useAirQualityStore()
-    const { refreshData } = useFetchRecentAirQuality(monitor?.id, true)
-    const { isFetching } = useAirQualityFetchState(monitor?.id)
+export function MetricsCard({ monitorId, style }: MetricsCardProps) {
+    const airQuality = useValue(airQualityStore$.recentAirQuality(monitorId))
+    const { refreshData } = useFetchRecentAirQuality(monitorId, true)
+    const { isFetching } = useAirQualityFetchState(monitorId)
     const triedFetching = useRef(false)
 
     useEffect(() => {
@@ -50,8 +50,8 @@ export function MetricsCard({ monitor, style }: MetricsCardProps) {
         }
     }, [isFetching])
 
-    const airQuality = recentAirQualities?.[monitor?.id ?? 'x']
-    const lastUpdated = dateTime(airQuality?.captureTime)?.toRelative() || "—"
+    const airData = Object.keys(airQuality || {}).filter(isAirField)
+        .sort((a, b) => a.localeCompare(b))
 
     return (
         <ThemedView bgThemeColor="backgroundPrimary" style={[styles.container, style]}>
@@ -63,12 +63,12 @@ export function MetricsCard({ monitor, style }: MetricsCardProps) {
                 <ThemedText style={styles.noData} type="small">No data available for now</ThemedText>
             }
 
-            {airQuality && <ThemedView style={styles.content}>
+            {airData.length > 0 && <ThemedView style={styles.content}>
 
                 <ThemedView style={styles.gasGroup}>
                     <ThemedView style={styles.gasList}>
-                        {Object.keys(airQuality || {}).filter(isAirField).filter(f => !isAirQualityField(f))
-                            .toSorted((a, b) => a.localeCompare(b)).map((field, i) => <MetricCard gasData={{ name: field, value: (airQuality?.[field] ?? '—') as string }}
+                        {airData.filter(f => !isAirQualityField(f))
+                            .map((field, i) => <MetricCard gasData={{ name: field, value: (airQuality?.[field] ?? '—') as string }}
                                 key={`${field}-${airQuality?.[field]}`} />)
                         }
                     </ThemedView>
@@ -77,17 +77,15 @@ export function MetricsCard({ monitor, style }: MetricsCardProps) {
                 <ThemedView style={styles.gasGroup}>
                     <ThemedText style={styles.gasGroupTitle}>Air Quality Parameters</ThemedText>
                     <ThemedView style={styles.gasList}>
-                        {Object.keys(airQuality || {})
-                            .filter(isAirField)
-                            .filter(f => isAirQualityField(f))
-                            .toSorted((a, b) => a.localeCompare(b)).map((field, i) => <MetricCard gasData={{ name: field, value: (airQuality?.[field] ?? '—') as string }}
+                        {airData.filter(isAirQualityField)
+                            .map((field, i) => <MetricCard gasData={{ name: field, value: (airQuality?.[field] ?? '—') as string }}
                                 key={`${field}-${airQuality?.[field]}`} />)
                         }
                     </ThemedView>
                 </ThemedView>
 
                 <ThemedText themeColor="foregroundMuted" style={styles.meta}>
-                    Updated {lastUpdated}
+                    Updated {dateTime(airQuality?.captureTime)?.toRelative() || "—"}
                 </ThemedText>
             </ThemedView>}
         </ThemedView>

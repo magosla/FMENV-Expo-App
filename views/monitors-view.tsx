@@ -4,13 +4,14 @@ import { ExternalLink } from "@/components/ui/external-link";
 import Logo from "@/components/ui/logo";
 import { ThemedText } from "@/components/ui/themed-text";
 import { ThemedView } from "@/components/ui/themed-view";
-import { useMonitorStore } from "@/hooks/use-monitor-store";
+import { monitorStore$ } from "@/stores/monitor";
+import { useValue } from "@legendapp/state/react";
 import { ScrollView, StyleSheet } from "react-native";
 
 
 export default function MonitorsView() {
-    const { monitors } = useMonitorStore();
-    // Convert Map to Array for FlatList
+    const monitors = useValue(monitorStore$.monitors);
+    // Convert Object to Array for FlatList
     const monitorsArray = Object.values(monitors);
 
     return (
@@ -20,7 +21,7 @@ export default function MonitorsView() {
             contentContainerStyle={styles.scrollViewContent}
         >
             <ThemedView style={styles.container}>
-                {monitorsArray.length === 0 ? (
+                {(monitorsArray?.length ?? 0) === 0 ? (
                     <EmptyMonitorsState />
                 ) : (
                     <MonitorsList
@@ -34,7 +35,9 @@ export default function MonitorsView() {
                 <ExternalLink href={process.env.EXPO_PUBLIC_ORGANIZATION_URL ?? ''}>
                     <ThemedText type="link" themeColor="foregroundSecondary">Federal Ministry of Environment, Nigeria.</ThemedText>
                 </ExternalLink>
-                <ThemedText type="small" themeColor="foregroundSecondary" style={{ textAlign: 'center' }}>Department of pollution control and environmental health.</ThemedText>
+                <ThemedText type="small" themeColor="foregroundSecondary" style={{ textAlign: 'center' }}>
+                    Department of pollution control and environmental health.
+                </ThemedText>
             </ThemedView>
 
             <ThemedView style={styles.footer} bgThemeColor="backgroundPrimary"

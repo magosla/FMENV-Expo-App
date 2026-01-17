@@ -27,7 +27,7 @@ export function getRecentAirQuality(endpoint: string, currentItem?: AirQualityIt
         _endpoint.searchParams.set('tz', DateTime.local().toFormat('ZZZZ'));
     }
 
-    return fetchData<Partial<RecentResponse>>(endpoint, isFetching, error).then(d => {
+    return fetchData<Partial<RecentResponse>>(_endpoint.toString(), isFetching, error).then(d => {
         return d?.items?.map(i => processRecentResponse(i))?.filter(Boolean) as RecentData
     })
 }

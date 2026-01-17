@@ -1,4 +1,3 @@
-import { useAppStore } from "@/hooks/use-app-store"
 import { getState } from "@/lib/gas-status"
 import { Gas } from "@/types/core"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
@@ -8,6 +7,8 @@ import { ThemedView } from "./ui/themed-view"
 import { getColorMap } from "@/services/color-map-service"
 import { useThemeColor } from "@/hooks/use-theme-color"
 import { StyleSheet } from "react-native"
+import { appStore$ } from "@/stores/app"
+import { useValue } from "@legendapp/state/react"
 
 type Prop = {
   readonly gasData: Gas
@@ -26,7 +27,7 @@ const gasIcons = {
 const colorMap = getColorMap()
 
 export function MetricCard({ gasData }: Prop) {
-  const { config: { gases } = {} } = useAppStore()
+  const gases = useValue(appStore$.config.gases)
 
   const gasInfo = gases?.[gasData.name]
 

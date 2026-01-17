@@ -1,4 +1,3 @@
-import SplashScreenController from "@/components/SplashScreenController";
 import BackgroundImage from "@/components/ui/background-image";
 import { ThemedView } from "@/components/ui/themed-view";
 import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from "@react-navigation/native";
@@ -8,8 +7,10 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { FetchErrorView } from "./fetch-error-view";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useFetchMonitors } from "@/hooks/use-fetch-monitor";
-import { useAppStore } from "@/hooks/use-app-store";
 import { logger } from "@/utils/logger";
+import { useValue } from "@legendapp/state/react";
+import { appStore$ } from "@/stores/app";
+import SplashScreenController from "@/components/splash-screen-controller";
 
 type RootLayoutViewProps = PropsWithChildren
 
@@ -41,11 +42,12 @@ export default function RootLayoutView({ children }: Readonly<RootLayoutViewProp
 }
 
 function MonitorsInit() {
-    const { config } = useAppStore()
+    const config = useValue(appStore$.config)
     const { fetchData } = useFetchMonitors()
 
     useEffect(() => {
-        logger.log('MonitorsInit','useEffect')
+        if (!config) return
+        logger.log('MonitorsInit', 'useEffect')
         fetchData({ retryOnError: true })
     }, [config, fetchData])
 
@@ -70,11 +72,9 @@ function SafeArea({ children }: Readonly<PropsWithChildren>) {
 
 function RootLayoutA({ children }: Readonly<PropsWithChildren>) {
 
-    const { config } = useAppStore()
+    const config = useValue(appStore$.config)
 
-    if (!config?.endpoints) return undefined
-
-    return (
+    return config?.endpoints && (
         <ThemedView style={styles.container}>
             <BackgroundImage>
                 {children}
