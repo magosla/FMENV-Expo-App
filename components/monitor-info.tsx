@@ -33,7 +33,7 @@ export function MonitorInfo({ monitorId, style }: Props) {
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom: 24,
+        marginBottom: 8,
     },
     wrapper: {
         borderRadius: 8,

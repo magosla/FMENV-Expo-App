@@ -32,7 +32,7 @@ export const getState = function (gas: Gas): GasState | undefined {
 
         if (val === undefined || cmp === undefined || !(cmp in compare)) continue
 
-        if (compare[cmp]?.(parseFloat(gas.value), parseFloat(val))) {
+        if (compare[cmp]?.(Number.parseFloat(gas.value), Number.parseFloat(val))) {
             return (cmp === 'else' ? val : res) as GasState
         }
     }

@@ -30,13 +30,13 @@ export const PollutionColorMap = ({ style, ...props }: ThemedViewProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 16,
+        paddingTop: 8,
         paddingBottom: 16,
     },
     body: {
         marginTop: 4,
         borderRadius: 8,
-        padding:2,
+        padding: 2,
         shadowColor: "rgba(0, 0, 0, 0.35)",
         shadowOffset: {
             width: 0,
@@ -49,12 +49,14 @@ const styles = StyleSheet.create({
     list: {
         display: 'flex',
         flexDirection: 'row',
-        gap:4,
+        gap: 4,
         flexWrap: 'wrap',
-        justifyContent: 'space-between'
     },
     listItem: {
         padding: 8,
-        borderRadius:4,
+        borderRadius: 4,
+        flexBasis: '28%',
+        flex: 1,
+        textAlign: 'center',
     },
 });

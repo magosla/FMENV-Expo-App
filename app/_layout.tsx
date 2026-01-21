@@ -1,8 +1,9 @@
 import { Slot } from "expo-router";
 import React from "react";
 import RootLayoutView from "@/views/root-layout-view";
-import { StatusBar } from "expo-status-bar";
+import { StatusBar as BaseStatusBar } from "expo-status-bar";
 import * as Sentry from '@sentry/react-native';
+import { useColorScheme } from "@/hooks/use-color-scheme.web";
 
 Sentry.init({
   dsn: 'https://b22ecbdbe227311c3ab7658fa17d8bdb@o4510694897418240.ingest.us.sentry.io/4510694929989632',
@@ -31,7 +32,16 @@ export default Sentry.wrap(function RootLayout() {
   return (
     <RootLayoutView>
       <Slot />
-      <StatusBar style="auto" animated />
+      <StatusBar />
     </RootLayoutView>
   )
 });
+
+
+function StatusBar() {
+  const theme = useColorScheme()
+
+  return (<BaseStatusBar
+    style={theme === 'dark' ? 'light' : 'dark'}
+    animated />)
+}

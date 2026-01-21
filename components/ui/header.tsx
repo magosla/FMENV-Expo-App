@@ -1,9 +1,9 @@
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { ThemedText } from "./themed-text";
-import { ThemedView, ThemedViewProps } from "./themed-view";
-import { StyleSheet } from "react-native";
+import { ThemedView } from "./themed-view";
+import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 
-type Props = { style?: ThemedViewProps['style'] } & {
+type Props = { style?: StyleProp<ViewStyle> } & {
     children?: string;
     subTitle?: string
 }

@@ -27,6 +27,10 @@ export default function MonitorView({ monitorId }: Readonly<MonitorViewProp>) {
                 <MonitorInfo monitorId={monitorId} style={styles.monitorInfo} />
                 <MonitorSection monitorId={monitorId} style={styles.monitorSection} />
                 <PollutionColorMap style={styles.pollutionColor} />
+
+                {/* <MapLink monitorId={monitorId} /> */}
+
+
                 <View style={styles.spacer} />
             </ScrollView>
 
@@ -43,11 +47,7 @@ function MapFloatButton({ monitorId }: MapFloatButtonProp) {
 
     const secondaryColor = useThemeColor({}, 'foregroundSecondary');
 
-    const mapUrl = monitor === undefined ? undefined : `https://www.openstreetmap.org/?mlat=${encodeURIComponent(
-        monitor.latitude
-    )}&mlon=${encodeURIComponent(monitor.longitude)}#map=15/${encodeURIComponent(
-        monitor.latitude
-    )}/${encodeURIComponent(monitor.longitude)}`
+    const mapUrl = monitor === undefined ? undefined : getMapLink({ latitude: monitor.latitude, longitude: monitor.longitude })
 
 
     return mapUrl && (<ThemedLink
@@ -57,7 +57,7 @@ function MapFloatButton({ monitorId }: MapFloatButtonProp) {
         bgThemeColor="backgroundSecondary"
         themeColor="foregroundSecondary"
         borderThemeColor="foregroundSecondary"
-        style={styles.link}
+        style={styles.floatButton}
     >
         <ThemedTouchableOpacity
             style={styles.button}
@@ -73,26 +73,82 @@ function MapFloatButton({ monitorId }: MapFloatButtonProp) {
 
 }
 
+// type MapLinkProp = {
+//     monitorId: string
+// }
+// function MapLink({ monitorId }: MapLinkProp) {
+//     const monitor = useValue(monitorStore$.monitor(monitorId))
+
+//     const secondaryColor = useThemeColor({}, 'foregroundSecondary');
+
+//     const mapUrl = monitor === undefined ? undefined : getMapLink({ latitude: monitor.latitude, longitude: monitor.longitude })
+
+
+//     return mapUrl && (<ThemedLink
+//         href={mapUrl || ''}
+//         external={true}
+//         borderDarkColor=""
+//         themeColor="foregroundSecondary"
+//         bgThemeColor="backgroundMuted"
+//         borderThemeColor="foregroundMuted"
+//         style={styles.link}
+//     >
+//         <View style={styles.linkItem}>
+//             <ThemedText themeColor="foregroundSecondary">Open in Maps</ThemedText>
+//             <EvilIcons
+//                 name="external-link"
+//                 size={16}
+//                 color={secondaryColor}
+//                 weight="medium"
+//             />
+//         </View>
+//     </ThemedLink>)
+
+// }
+
 const styles = StyleSheet.create({
-    scrollView: { flex: 1, opacity: 0.8, margin: 0 },
-    scrollViewContent: { flex: 1, padding: 8, backgroundColor: '#0000FF00' },
+    scrollView: { opacity: 0.8, },
+    scrollViewContent: { padding: 8, backgroundColor: '#0000FF00' },
     monitorInfo: {
         margin: 8,
     },
     monitorSection: {
+        marginTop: 0,
         margin: 8,
     },
     pollutionColor: {
         margin: 8,
     },
     spacer: {
-        height: 60,
+        height: 80,
     },
     button: {
         margin: 0,
         padding: 10,
     },
-    link: {
+    // link: {
+    //     borderWidth: 1,
+    //     borderLeftWidth: 0,
+    //     padding: 0,
+    //     borderRightWidth: 0,
+    //     marginHorizontal: 8,
+    //     flex: 1,
+    //     display: 'flex',
+    // },
+    // linkItem: {
+    //     paddingHorizontal: 8,
+    //     paddingVertical: 4,
+    //     flex: 1,
+    //     display: 'flex',
+    //     alignItems: 'center',
+    //     flexDirection: 'row',
+    //     justifyContent: 'space-between',
+    // },
+    // linkIcon: {
+    //     display: 'flex',
+    //     justifyContent: 'flex-end',
+    // },
+    floatButton: {
         position: 'absolute',
         bottom: 16,
         left: 16,
@@ -111,3 +167,14 @@ const styles = StyleSheet.create({
         padding: 0,
     }
 });
+
+
+
+
+function getMapLink({ latitude, longitude }: { latitude: string, longitude: string }) {
+    return `https://www.openstreetmap.org/?mlat=${encodeURIComponent(
+        latitude
+    )}&mlon=${encodeURIComponent(longitude)}#map=15/${encodeURIComponent(
+        latitude
+    )}/${encodeURIComponent(longitude)}`
+}

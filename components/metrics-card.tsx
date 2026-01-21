@@ -2,8 +2,8 @@ import { useAirQualityFetchState, useFetchRecentAirQuality } from "@/hooks/use-f
 import { dateTime } from "@/utils/date-time";
 import { logger } from "@/utils/logger";
 import { useFocusEffect } from "expo-router";
-import { ComponentProps, useCallback, useEffect, useRef } from "react";
-import { StyleSheet } from "react-native";
+import { useCallback, useEffect, useRef } from "react";
+import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { MetricCard } from "./metric-card";
 import { ThemedText } from "./ui/themed-text";
 import { ThemedView } from "./ui/themed-view";
@@ -12,7 +12,7 @@ import { useValue } from "@legendapp/state/react";
 
 interface MetricsCardProps {
     readonly monitorId: string;
-    readonly style?: ComponentProps<typeof ThemedView>['style'];
+    readonly style?: StyleProp<ViewStyle>
 }
 const airQualityFields = new Set(['aqi', 'co', 'co2', 'no2', 'ozone', 'tvoc', 'pm10', 'pm2_5'])
 

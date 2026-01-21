@@ -6,27 +6,19 @@ import { ThemedText } from "./ui/themed-text"
 import { ThemedView } from "./ui/themed-view"
 import { getColorMap } from "@/services/color-map-service"
 import { useThemeColor } from "@/hooks/use-theme-color"
-import { StyleSheet } from "react-native"
+import { StyleProp, StyleSheet, ViewStyle } from "react-native"
 import { appStore$ } from "@/stores/app"
 import { useValue } from "@legendapp/state/react"
+import { gasIcons } from "@/data/icons"
 
 type Prop = {
   readonly gasData: Gas
-}
-const gasIcons = {
-  temperature: 'thermometer',
-  humidity: 'water',
-  noise: 'volume-high',
-  light: 'lightbulb-on',
-  wind_speed: 'weather-windy',
-  wind_direction: 'flag',
-  rain_fall: 'weather-rainy',
-  rain_fall_period: 'weather-rainy',
+  readonly style?: StyleProp<ViewStyle>
 }
 
 const colorMap = getColorMap()
 
-export function MetricCard({ gasData }: Prop) {
+export function MetricCard({ gasData, style }: Prop) {
   const gases = useValue(appStore$.config.gases)
 
   const gasInfo = gases?.[gasData.name]
@@ -41,7 +33,7 @@ export function MetricCard({ gasData }: Prop) {
   const mutedColor = useThemeColor({}, 'foregroundMuted')
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, style]}>
       <ThemedView style={[
         styles.wrapper,
         { backgroundColor: colorData?.background || backgroundSecondary },
